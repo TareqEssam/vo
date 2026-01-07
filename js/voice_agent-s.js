@@ -1282,9 +1282,14 @@ const createFloatingUI = () => {
             @media (max-width: 768px) {
                 #expert-panel-overlay {
                     padding: 8px !important;
+                }
+                
+                #expert-panel-overlay .container {
+                    padding: 0 !important;
                     display: flex !important;
                     align-items: center !important;
                     justify-content: center !important;
+                    min-height: 100% !important;
                 }
                 
                 #expert-panel-content { 
@@ -1377,8 +1382,8 @@ const createFloatingUI = () => {
                 .container {
                     padding: 0 !important;
                 }
-            }     
-      </style>
+            } 
+     </style>
     `;
     
     const html = `
