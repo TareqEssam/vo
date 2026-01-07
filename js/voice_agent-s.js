@@ -13,7 +13,7 @@
 
 // ==================== 🧠 حالة الذكاء الاصطناعي ====================
 const AI_STATE = {
-    apiKey: "",
+    apiKey: " ",
     conversationHistory: [],      // سجل الحوار الكامل
     maxHistory: 30,                // حد الذاكرة
     currentActivity: null,         // النشاط الحالي في السياق
@@ -21,385 +21,6 @@ const AI_STATE = {
     userPreferences: new Map(),    // تفضيلات المستخدم المتعلمة
     sessionStart: Date.now()
 };
-
-
-        <style>
-            .ai-floating-btn {
-                position: fixed; z-index: 1000000;
-                display: flex; align-items: center; justify-content: center;
-                color: white; cursor: move; 
-                border: 2px solid rgba(255,255,255,0.4);
-                box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
-                touch-action: none; transition: transform 0.2s;
-            }
-            #mic-btn {
-                width: 60px; height: 60px;
-                background: linear-gradient(135deg, #0d6efd, #0a58ca);
-                border-radius: 50%; bottom: 100px; left: 20px;
-            }
-            #speaker-btn {
-                width: 45px; height: 45px;
-                background: linear-gradient(135deg, #6c757d, #343a40);
-                border-radius: 50%; bottom: 170px; left: 27px;
-            }
-            .mic-active {
-                animation: ai-pulse 1.5s infinite;
-                background: linear-gradient(135deg, #dc3545, #bb2d3b) !important;
-            }
-            @keyframes ai-pulse {
-                0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
-                70% { box-shadow: 0 0 0 20px rgba(220,53,69,0); }
-                100% { box-shadow: 0 0 0 0 rgba(220,53,69,0); }
-            }
-            .cursor-pointer { cursor: pointer; }
-            .hover-bg-light:hover { background-color: #f8f9fa; }
-            .hover-shadow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-            .hover-lift { transition: transform 0.2s; }
-            .hover-lift:hover { transform: translateY(-4px); }
-            #expert-panel-overlay { 
-                direction: rtl; 
-                text-align: right; 
-            }
-            
-                    /* ================== تحسينات النافذة المنبثقة للموبايل ================== */
-
-/* إصلاح النافذة المنبثقة */
-#expert-panel-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important; /* Dynamic viewport height للموبايل */
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    z-index: 9999999 !important;
-}
-
-/* حاوية المحتوى */
-#expert-panel-overlay .container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    min-height: 100vh !important;
-    min-height: 100dvh !important;
-    display: flex !important;
-    align-items: flex-start !important;
-}
-
-#expert-panel-content {
-    width: 100% !important;
-    max-width: 900px !important;
-    margin: 0 auto !important;
-    background: white !important;
-    position: relative !important;
-    box-shadow: 0 0 50px rgba(0,0,0,0.3) !important;
-}
-
-/* تحسينات الموبايل */
-@media (max-width: 768px) {
-    #expert-panel-overlay {
-        padding: 0 !important;
-        display: flex !important;
-        align-items: flex-start !important;
-    }
-    
-    #expert-panel-overlay .container {
-        padding: 8px !important;
-        display: block !important;
-    }
-    
-    #expert-panel-content { 
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-        max-height: none !important;
-    }
-    
-    /* تحسين المحتوى الداخلي */
-    #expert-panel-content .p-4 {
-        padding: 1rem !important;
-        max-height: none !important;
-        overflow-y: visible !important;
-    }
-    
-    #expert-panel-content .p-3 {
-        padding: 0.75rem !important;
-    }
-    
-    /* تحسين البطاقات */
-    .col-md-6 { 
-        width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-bottom: 0.75rem !important;
-    }
-    
-    .card {
-        margin-bottom: 0.5rem !important;
-    }
-    
-    .card-body { 
-        font-size: 0.85rem !important;
-        padding: 0.75rem !important;
-        line-height: 1.4 !important;
-    }
-    
-    /* تحسين التنبيهات */
-    .alert { 
-        font-size: 0.9rem !important;
-        padding: 0.75rem !important;
-        margin-bottom: 1rem !important;
-    }
-    
-    /* تحسين بطاقة الدليل */
-    .guide-card {
-        margin-bottom: 1rem !important;
-    }
-    
-    .guide-card .card-body {
-        padding: 1rem !important;
-    }
-    
-    .guide-icon {
-        width: 40px !important;
-        height: 40px !important;
-    }
-    
-    .guide-card h5 {
-        font-size: 0.9rem !important;
-        line-height: 1.3 !important;
-    }
-    
-    .guide-card .small {
-        font-size: 0.75rem !important;
-    }
-    
-    /* تحسين الأزرار */
-    .btn {
-        font-size: 0.85rem !important;
-        padding: 0.5rem 0.75rem !important;
-        white-space: nowrap !important;
-    }
-    
-    .d-flex.gap-2 {
-        gap: 0.5rem !important;
-    }
-    
-    /* تحسين العناوين */
-    h5 {
-        font-size: 1rem !important;
-        line-height: 1.3 !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    h6 {
-        font-size: 0.9rem !important;
-        line-height: 1.3 !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    /* تحسين الخيارات والاقتراحات */
-    .choice-item, .suggestion-card, .best-choice-card {
-        padding: 0.75rem !important;
-        font-size: 0.85rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    .alternatives-list .badge {
-        font-size: 0.7rem !important;
-        padding: 0.25rem 0.4rem !important;
-    }
-    
-    /* تحسين نصائح البحث */
-    .search-tips {
-        padding: 0.75rem !important;
-        font-size: 0.85rem !important;
-    }
-    
-    .search-tips ul {
-        padding-left: 1.25rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    .search-tips li {
-        margin-bottom: 0.25rem !important;
-        line-height: 1.4 !important;
-    }
-    
-    /* تحسين أمثلة البحث */
-    .example-searches .badge {
-        font-size: 0.75rem !important;
-        padding: 0.35rem 0.6rem !important;
-        margin-bottom: 0.35rem !important;
-    }
-    
-    /* تحسين معلومات السياق */
-    .context-info {
-        padding: 0.5rem !important;
-        font-size: 0.8rem !important;
-        margin-bottom: 0.75rem !important;
-    }
-    
-    /* تحسين أيقونة الثقة */
-    .confidence-indicator .badge {
-        font-size: 0.7rem !important;
-        padding: 0.25rem 0.5rem !important;
-    }
-    
-    /* تحسين الأزرار العائمة */
-    #mic-btn { 
-        width: 55px !important; 
-        height: 55px !important; 
-        bottom: 20px !important; 
-        right: 20px !important;
-        left: auto !important;
-    }
-    
-    #speaker-btn { 
-        width: 45px !important; 
-        height: 45px !important; 
-        bottom: 85px !important; 
-        right: 25px !important;
-        left: auto !important;
-    }
-    
-    /* تحسين اللودر */
-    #ai-loader {
-        bottom: 20px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        padding: 10px 20px !important;
-        font-size: 0.85rem !important;
-        max-width: 90% !important;
-    }
-}
-
-/* شاشات صغيرة جداً (أقل من 400px) */
-@media (max-width: 400px) {
-    #expert-panel-content {
-        border-radius: 8px !important;
-    }
-    
-    #expert-panel-content .p-4 {
-        padding: 0.75rem !important;
-    }
-    
-    .card-body {
-        padding: 0.6rem !important;
-        font-size: 0.8rem !important;
-    }
-    
-    .alert {
-        padding: 0.6rem !important;
-        font-size: 0.85rem !important;
-    }
-    
-    h5 {
-        font-size: 0.95rem !important;
-    }
-    
-    h6 {
-        font-size: 0.85rem !important;
-    }
-    
-    .btn {
-        font-size: 0.8rem !important;
-        padding: 0.4rem 0.65rem !important;
-    }
-    
-    #mic-btn {
-        width: 50px !important;
-        height: 50px !important;
-        bottom: 15px !important;
-        right: 15px !important;
-    }
-    
-    #speaker-btn {
-        width: 40px !important;
-        height: 40px !important;
-        bottom: 75px !important;
-        right: 20px !important;
-    }
-    
-    .guide-card h5 {
-        font-size: 0.85rem !important;
-    }
-    
-    .guide-icon {
-        width: 35px !important;
-        height: 35px !important;
-    }
-}
-
-/* الوضع الأفقي للموبايل */
-@media (max-width: 768px) and (orientation: landscape) {
-    #expert-panel-overlay {
-        align-items: flex-start !important;
-    }
-    
-    #expert-panel-content {
-        max-height: none !important;
-    }
-    
-    .card-body {
-        max-height: 120px !important;
-        overflow-y: auto !important;
-    }
-}
-
-/* تحسينات إضافية للتفاعل */
-.cursor-pointer, .choice-item, .suggestion-card, .best-choice-card {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
-    touch-action: manipulation !important;
-    transition: all 0.2s ease !important;
-}
-
-.choice-item:active, .suggestion-card:active, .best-choice-card:active {
-    transform: scale(0.98) !important;
-    opacity: 0.9 !important;
-}
-
-.btn {
-    touch-action: manipulation !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-}
-
-/* تحسين السكرول */
-#expert-panel-overlay, #expert-panel-content, .card-body {
-    -webkit-overflow-scrolling: touch !important;
-    scroll-behavior: smooth !important;
-}
-
-/* منع مشاكل الزووم */
-input, textarea, select, button {
-    font-size: 16px !important; /* منع الزووم التلقائي في iOS */
-}
-
-/* تحسين زر الإغلاق */
-.btn-close {
-    font-size: 1.2rem !important;
-    padding: 0.5rem !important;
-    opacity: 0.8 !important;
-}
-
-@media (max-width: 768px) {
-    .btn-close {
-        font-size: 1rem !important;
-        padding: 0.4rem !important;
-    }
-}
-               
-        </style>
 
 // ==================== 🎯 طبقة الذكاء الصوتي ====================
 const VoiceIntelligence = {
@@ -1070,32 +691,14 @@ async function getRealAIResponse(query, act, intent) {
     });
 }
 
-
-/**
- * 🔧 إصلاح viewport للموبايل
- */
-function ensureMobileViewport() {
-    let viewport = document.querySelector('meta[name="viewport"]');
-    if (!viewport) {
-        viewport = document.createElement('meta');
-        viewport.name = 'viewport';
-        document.head.appendChild(viewport);
-    }
-    viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-}
-
 // ==================== 🎨 واجهة الخيارات الذكية ====================
 function showSmartChoices(searchResult) {
-      ensureMobileViewport(); // 🔧 إضافة هذا السطر
     const { bestMatch, alternatives, confidence, reasoning } = searchResult;
     
     const overlay = document.getElementById('expert-panel-overlay');
     const content = document.getElementById('expert-panel-content');
     
     overlay.style.display = 'block';
-      lockBodyScroll(); // 🔧 إضافة هذا
-
-
     
     const html = `
         <div class="p-3 bg-warning text-dark d-flex justify-content-between align-items-center">
@@ -1165,15 +768,13 @@ function showSmartChoices(searchResult) {
 
 // ==================== 💡 واجهة الاقتراحات ====================
 function showSmartSuggestions(searchResult, query) {
-      ensureMobileViewport();
     const { suggestions } = searchResult;
     
     const overlay = document.getElementById('expert-panel-overlay');
     const content = document.getElementById('expert-panel-content');
     
     overlay.style.display = 'block';
-    lockBodyScroll(); // 🔧 إضافة هذا
-
+    
     const hasSuggestions = suggestions && suggestions.length > 0;
     
     const html = `
@@ -1254,13 +855,10 @@ function showSmartSuggestions(searchResult, query) {
 
 // ==================== 📊 لوحة المعلومات الاحترافية ====================
 function showExpertDashboard(activity, intent, aiSpeech, searchResult = null) {
-          ensureMobileViewport(); // 🔧 إضافة هذا السطر
     const overlay = document.getElementById('expert-panel-overlay');
     const content = document.getElementById('expert-panel-content');
     
     overlay.style.display = 'block';
-      lockBodyScroll(); // 🔧 إضافة هذا
-
     
     const isGeneral = intent === 'general';
     const details = activity.details;
@@ -1566,8 +1164,6 @@ function searchExample(example) {
     handleIntelligence(example);
 }
 
-
-
 function retryVoiceSearch() {
     closePanel();
     try {
@@ -1611,34 +1207,9 @@ function clearContextAndSearch() {
     speak('تم مسح السياق. ابدأ بحثاً جديداً.');
 }
 
-/**
- * 🚫 منع السكرول في الخلفية عند فتح النافذة
- */
-function lockBodyScroll() {
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-    document.body.style.top = `-${window.scrollY}px`;
-}
-
-/**
- * ✅ السماح بالسكرول عند إغلاق النافذة
- */
-function unlockBodyScroll() {
-    const scrollY = document.body.style.top;
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.width = '';
-    document.body.style.top = '';
-    window.scrollTo(0, parseInt(scrollY || '0') * -1);
-}
-
 function closePanel() {
     const overlay = document.getElementById('expert-panel-overlay');
-    if (overlay) {
-        overlay.style.display = 'none';
-        unlockBodyScroll(); // 🔧 إضافة هذا
-    }
+    if (overlay) overlay.style.display = 'none';
 }
 
 function copyGuideLink(link) {
@@ -1670,25 +1241,215 @@ const createFloatingUI = () => {
     cleanupOldUI();
     
     const styles = `
+        <style>
+            .ai-floating-btn {
+                position: fixed; z-index: 1000000;
+                display: flex; align-items: center; justify-content: center;
+                color: white; cursor: move; 
+                border: 2px solid rgba(255,255,255,0.4);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
+                touch-action: none; transition: transform 0.2s;
+            }
+            #mic-btn {
+                width: 60px; height: 60px;
+                background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                border-radius: 50%; bottom: 100px; left: 20px;
+            }
+            #speaker-btn {
+                width: 45px; height: 45px;
+                background: linear-gradient(135deg, #6c757d, #343a40);
+                border-radius: 50%; bottom: 170px; left: 27px;
+            }
+            .mic-active {
+                animation: ai-pulse 1.5s infinite;
+                background: linear-gradient(135deg, #dc3545, #bb2d3b) !important;
+            }
+            @keyframes ai-pulse {
+                0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
+                70% { box-shadow: 0 0 0 20px rgba(220,53,69,0); }
+                100% { box-shadow: 0 0 0 0 rgba(220,53,69,0); }
+            }
+            .cursor-pointer { cursor: pointer; }
+            .hover-bg-light:hover { background-color: #f8f9fa; }
+            .hover-shadow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+            .hover-lift { transition: transform 0.2s; }
+            .hover-lift:hover { transform: translateY(-4px); }
+            #expert-panel-overlay { 
+                direction: rtl; 
+                text-align: right; 
+            }
+            @media (max-width: 768px) {
+    #expert-panel-content { 
+        width: 95% !important; 
+        max-height: 90vh;
+        overflow-y: auto;
+        margin-top: 10px;
+    }
+    .col-md-6 { 
+        width: 100% !important; 
+        margin-bottom: 0.75rem;
+    }
+    #mic-btn { 
+        width: 55px !important; 
+        height: 55px !important; 
+        bottom: 80px !important; 
+        left: 15px !important; 
+    }
+    #speaker-btn { 
+        width: 40px !important; 
+        height: 40px !important; 
+        bottom: 145px !important; 
+        left: 22px !important; 
+    }
+    .card-body { 
+        font-size: 0.9rem !important; 
+        padding: 0.75rem !important;
+    }
+    .alert { 
+        font-size: 0.95rem !important; 
+        padding: 0.75rem !important;
+    }
+    .guide-card .card-body {
+        padding: 1rem !important;
+    }
+    .guide-icon {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    .guide-card h5 {
+        font-size: 0.95rem !important;
+    }
+    .btn {
+        font-size: 0.85rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
+    .choice-item, .suggestion-card {
+        padding: 0.75rem !important;
+        font-size: 0.9rem !important;
+    }
+    .alternatives-list .badge {
+        font-size: 0.7rem !important;
+    }
+}
+
+/* شاشات صغيرة جداً (أقل من 400px) */
+@media (max-width: 400px) {
+    #expert-panel-content {
+        width: 98% !important;
+        font-size: 0.85rem !important;
+    }
+    #mic-btn {
+        width: 50px !important;
+        height: 50px !important;
+        bottom: 70px !important;
+        left: 10px !important;
+    }
+    #speaker-btn {
+        width: 38px !important;
+        height: 38px !important;
+        bottom: 130px !important;
+        left: 16px !important;
+    }
+    .p-4 {
+        padding: 1rem !important;
+    }
+    .p-3 {
+        padding: 0.75rem !important;
+    }
+    h5 {
+        font-size: 1rem !important;
+    }
+    h6 {
+        font-size: 0.9rem !important;
+    }
+    .d-flex.gap-2 {
+        gap: 0.5rem !important;
+        flex-wrap: wrap;
+    }
+    .btn {
+        font-size: 0.8rem !important;
+        padding: 0.35rem 0.7rem !important;
+    }
+}
+
+/* تحسين اللوحة في الوضع الأفقي للموبايل */
+@media (max-width: 768px) and (orientation: landscape) {
+    #expert-panel-content {
+        max-height: 85vh !important;
+    }
+    #expert-panel-overlay {
+        padding: 10px !important;
+    }
+    .card-body {
+        max-height: 150px;
+        overflow-y: auto;
+    }
+}
+                .col-md-6 { width: 100% !important; }
+                #mic-btn { 
+                    width: 55px !important; 
+                    height: 55px !important; 
+                    bottom: 80px !important; 
+                    left: 15px !important; 
+                }
+                #speaker-btn { 
+                    width: 40px !important; 
+                    height: 40px !important; 
+                    bottom: 145px !important; 
+                    left: 22px !important; 
+                }
+                .card-body { font-size: 0.9rem !important; }
+                .alert { font-size: 0.95rem !important; }
+            }
+
+/* تحسين التفاعل باللمس */
+.cursor-pointer, .choice-item, .suggestion-card, .best-choice-card {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
+}
+
+.btn {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* تحسين السكرول في الموبايل */
+#expert-panel-content, .card-body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* منع التكبير عند النقر المزدوج */
+* {
+    touch-action: pan-x pan-y;
+}
+
+button, .cursor-pointer {
+    touch-action: manipulation;
+}
+        </style>
     `;
     
     const html = `
-    <div id="mic-btn" class="ai-floating-btn draggable-ai">
-        <i class="fas fa-microphone" style="font-size:24px;"></i>
-    </div>
-    <div id="speaker-btn" class="ai-floating-btn draggable-ai">
-        <i class="fas fa-volume-up"></i>
-    </div>
-    <div id="ai-loader" style="display:none; position:fixed; z-index:1000001; border:2px solid #0d6efd; box-shadow:0 5px 20px rgba(0,0,0,0.2); background:white; padding:12px 25px; border-radius:50px;">
-        <div class="d-flex align-items-center gap-2">
-            <div class="spinner-border text-primary spinner-border-sm"></div>
-            <span class="fw-bold">🧠 يتم التحليل الذكي...</span>
+        <div id="mic-btn" class="ai-floating-btn draggable-ai">
+            <i class="fas fa-microphone" style="font-size:24px;"></i>
         </div>
-    </div>
-    <div id="expert-panel-overlay" style="display:none;">
-        <div id="expert-panel-content" class="bg-white shadow-lg overflow-hidden"></div>
-    </div>
-`;
+        <div id="speaker-btn" class="ai-floating-btn draggable-ai">
+            <i class="fas fa-volume-up"></i>
+        </div>
+        <div id="ai-loader" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:white; padding:12px 25px; border-radius:50px; z-index:1000001; border:2px solid #0d6efd; box-shadow:0 5px 20px rgba(0,0,0,0.2);">
+            <div class="d-flex align-items-center gap-2">
+                <div class="spinner-border text-primary spinner-border-sm"></div>
+                <span class="fw-bold">🧠 يتم التحليل الذكي...</span>
+            </div>
+        </div>
+        <div id="expert-panel-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:9999999; overflow-y:auto; padding:15px;">
+            <div class="container py-3">
+                <div id="expert-panel-content" class="bg-white rounded-4 shadow-lg overflow-hidden" style="max-width:900px; margin:auto;"></div>
+            </div>
+        </div>
+    `;
     
     document.head.insertAdjacentHTML('beforeend', styles);
     document.body.insertAdjacentHTML('beforeend', html);
