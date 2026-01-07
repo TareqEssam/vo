@@ -1377,7 +1377,112 @@ const createFloatingUI = () => {
                 .container {
                     padding: 0 !important;
                 }
-            }     
+            }    
+            /* تحسينات شاملة للموبايل - جميع الشاشات حتى 768px */
+            @media (max-width: 768px) {
+                #expert-panel-overlay {
+                    padding: 8px !important;
+                }
+                
+                #expert-panel-overlay .container {
+                    padding: 0 !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    min-height: 100% !important;
+                }
+                
+                #expert-panel-content { 
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    max-height: 92vh !important;
+                    overflow-y: auto !important;
+                    margin: 0 !important;
+                    border-radius: 15px !important;
+                }
+                
+                .col-md-6 { 
+                    width: 100% !important; 
+                    margin-bottom: 0.75rem !important;
+                }
+                
+                .row.g-3 {
+                    gap: 0.75rem !important;
+                }
+                
+                #mic-btn { 
+                    width: 55px !important; 
+                    height: 55px !important; 
+                    bottom: 80px !important; 
+                    left: 15px !important; 
+                }
+                
+                #speaker-btn { 
+                    width: 40px !important; 
+                    height: 40px !important; 
+                    bottom: 145px !important; 
+                    left: 22px !important; 
+                }
+                
+                .card-body { 
+                    font-size: 0.9rem !important; 
+                    padding: 0.75rem !important;
+                    max-height: none !important;
+                }
+                
+                .alert { 
+                    font-size: 0.95rem !important; 
+                    padding: 0.75rem !important;
+                    margin-bottom: 0.75rem !important;
+                }
+                
+                .guide-card .card-body {
+                    padding: 1rem !important;
+                }
+                
+                .guide-icon {
+                    width: 40px !important;
+                    height: 40px !important;
+                }
+                
+                .guide-card h5 {
+                    font-size: 0.95rem !important;
+                }
+                
+                .btn {
+                    font-size: 0.85rem !important;
+                    padding: 0.4rem 0.8rem !important;
+                }
+                
+                .choice-item, .suggestion-card {
+                    padding: 0.75rem !important;
+                    font-size: 0.9rem !important;
+                }
+                
+                .alternatives-list .badge {
+                    font-size: 0.7rem !important;
+                }
+                
+                .p-4 {
+                    padding: 1.25rem !important;
+                }
+                
+                .p-3 {
+                    padding: 1rem !important;
+                }
+                
+                h5 {
+                    font-size: 1.1rem !important;
+                }
+                
+                h6 {
+                    font-size: 0.95rem !important;
+                }
+                
+                .container {
+                    padding: 0 !important;
+                }
+            }
       </style>
     `;
     
@@ -1549,4 +1654,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         speak('مَرحباً! أنا مساعدك المتخصص في اللجان. اضغط على زر الميكروفون واسألني عن أي نشاط.');
     }, 1000);
+
 });
