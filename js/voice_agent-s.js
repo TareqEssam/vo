@@ -22,6 +22,385 @@ const AI_STATE = {
     sessionStart: Date.now()
 };
 
+
+        <style>
+            .ai-floating-btn {
+                position: fixed; z-index: 1000000;
+                display: flex; align-items: center; justify-content: center;
+                color: white; cursor: move; 
+                border: 2px solid rgba(255,255,255,0.4);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
+                touch-action: none; transition: transform 0.2s;
+            }
+            #mic-btn {
+                width: 60px; height: 60px;
+                background: linear-gradient(135deg, #0d6efd, #0a58ca);
+                border-radius: 50%; bottom: 100px; left: 20px;
+            }
+            #speaker-btn {
+                width: 45px; height: 45px;
+                background: linear-gradient(135deg, #6c757d, #343a40);
+                border-radius: 50%; bottom: 170px; left: 27px;
+            }
+            .mic-active {
+                animation: ai-pulse 1.5s infinite;
+                background: linear-gradient(135deg, #dc3545, #bb2d3b) !important;
+            }
+            @keyframes ai-pulse {
+                0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
+                70% { box-shadow: 0 0 0 20px rgba(220,53,69,0); }
+                100% { box-shadow: 0 0 0 0 rgba(220,53,69,0); }
+            }
+            .cursor-pointer { cursor: pointer; }
+            .hover-bg-light:hover { background-color: #f8f9fa; }
+            .hover-shadow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+            .hover-lift { transition: transform 0.2s; }
+            .hover-lift:hover { transform: translateY(-4px); }
+            #expert-panel-overlay { 
+                direction: rtl; 
+                text-align: right; 
+            }
+            
+                    /* ================== تحسينات النافذة المنبثقة للموبايل ================== */
+
+/* إصلاح النافذة المنبثقة */
+#expert-panel-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important; /* Dynamic viewport height للموبايل */
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    z-index: 9999999 !important;
+}
+
+/* حاوية المحتوى */
+#expert-panel-overlay .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    display: flex !important;
+    align-items: flex-start !important;
+}
+
+#expert-panel-content {
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    background: white !important;
+    position: relative !important;
+    box-shadow: 0 0 50px rgba(0,0,0,0.3) !important;
+}
+
+/* تحسينات الموبايل */
+@media (max-width: 768px) {
+    #expert-panel-overlay {
+        padding: 0 !important;
+        display: flex !important;
+        align-items: flex-start !important;
+    }
+    
+    #expert-panel-overlay .container {
+        padding: 8px !important;
+        display: block !important;
+    }
+    
+    #expert-panel-content { 
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        max-height: none !important;
+    }
+    
+    /* تحسين المحتوى الداخلي */
+    #expert-panel-content .p-4 {
+        padding: 1rem !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+    
+    #expert-panel-content .p-3 {
+        padding: 0.75rem !important;
+    }
+    
+    /* تحسين البطاقات */
+    .col-md-6 { 
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .card {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .card-body { 
+        font-size: 0.85rem !important;
+        padding: 0.75rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* تحسين التنبيهات */
+    .alert { 
+        font-size: 0.9rem !important;
+        padding: 0.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* تحسين بطاقة الدليل */
+    .guide-card {
+        margin-bottom: 1rem !important;
+    }
+    
+    .guide-card .card-body {
+        padding: 1rem !important;
+    }
+    
+    .guide-icon {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    .guide-card h5 {
+        font-size: 0.9rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    .guide-card .small {
+        font-size: 0.75rem !important;
+    }
+    
+    /* تحسين الأزرار */
+    .btn {
+        font-size: 0.85rem !important;
+        padding: 0.5rem 0.75rem !important;
+        white-space: nowrap !important;
+    }
+    
+    .d-flex.gap-2 {
+        gap: 0.5rem !important;
+    }
+    
+    /* تحسين العناوين */
+    h5 {
+        font-size: 1rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    h6 {
+        font-size: 0.9rem !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* تحسين الخيارات والاقتراحات */
+    .choice-item, .suggestion-card, .best-choice-card {
+        padding: 0.75rem !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .alternatives-list .badge {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.4rem !important;
+    }
+    
+    /* تحسين نصائح البحث */
+    .search-tips {
+        padding: 0.75rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .search-tips ul {
+        padding-left: 1.25rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .search-tips li {
+        margin-bottom: 0.25rem !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* تحسين أمثلة البحث */
+    .example-searches .badge {
+        font-size: 0.75rem !important;
+        padding: 0.35rem 0.6rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+    
+    /* تحسين معلومات السياق */
+    .context-info {
+        padding: 0.5rem !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    /* تحسين أيقونة الثقة */
+    .confidence-indicator .badge {
+        font-size: 0.7rem !important;
+        padding: 0.25rem 0.5rem !important;
+    }
+    
+    /* تحسين الأزرار العائمة */
+    #mic-btn { 
+        width: 55px !important; 
+        height: 55px !important; 
+        bottom: 20px !important; 
+        right: 20px !important;
+        left: auto !important;
+    }
+    
+    #speaker-btn { 
+        width: 45px !important; 
+        height: 45px !important; 
+        bottom: 85px !important; 
+        right: 25px !important;
+        left: auto !important;
+    }
+    
+    /* تحسين اللودر */
+    #ai-loader {
+        bottom: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        padding: 10px 20px !important;
+        font-size: 0.85rem !important;
+        max-width: 90% !important;
+    }
+}
+
+/* شاشات صغيرة جداً (أقل من 400px) */
+@media (max-width: 400px) {
+    #expert-panel-content {
+        border-radius: 8px !important;
+    }
+    
+    #expert-panel-content .p-4 {
+        padding: 0.75rem !important;
+    }
+    
+    .card-body {
+        padding: 0.6rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .alert {
+        padding: 0.6rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    h5 {
+        font-size: 0.95rem !important;
+    }
+    
+    h6 {
+        font-size: 0.85rem !important;
+    }
+    
+    .btn {
+        font-size: 0.8rem !important;
+        padding: 0.4rem 0.65rem !important;
+    }
+    
+    #mic-btn {
+        width: 50px !important;
+        height: 50px !important;
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+    
+    #speaker-btn {
+        width: 40px !important;
+        height: 40px !important;
+        bottom: 75px !important;
+        right: 20px !important;
+    }
+    
+    .guide-card h5 {
+        font-size: 0.85rem !important;
+    }
+    
+    .guide-icon {
+        width: 35px !important;
+        height: 35px !important;
+    }
+}
+
+/* الوضع الأفقي للموبايل */
+@media (max-width: 768px) and (orientation: landscape) {
+    #expert-panel-overlay {
+        align-items: flex-start !important;
+    }
+    
+    #expert-panel-content {
+        max-height: none !important;
+    }
+    
+    .card-body {
+        max-height: 120px !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* تحسينات إضافية للتفاعل */
+.cursor-pointer, .choice-item, .suggestion-card, .best-choice-card {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+    touch-action: manipulation !important;
+    transition: all 0.2s ease !important;
+}
+
+.choice-item:active, .suggestion-card:active, .best-choice-card:active {
+    transform: scale(0.98) !important;
+    opacity: 0.9 !important;
+}
+
+.btn {
+    touch-action: manipulation !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+}
+
+/* تحسين السكرول */
+#expert-panel-overlay, #expert-panel-content, .card-body {
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+}
+
+/* منع مشاكل الزووم */
+input, textarea, select, button {
+    font-size: 16px !important; /* منع الزووم التلقائي في iOS */
+}
+
+/* تحسين زر الإغلاق */
+.btn-close {
+    font-size: 1.2rem !important;
+    padding: 0.5rem !important;
+    opacity: 0.8 !important;
+}
+
+@media (max-width: 768px) {
+    .btn-close {
+        font-size: 1rem !important;
+        padding: 0.4rem !important;
+    }
+}
+               
+        </style>
+
 // ==================== 🎯 طبقة الذكاء الصوتي ====================
 const VoiceIntelligence = {
     
@@ -1291,383 +1670,6 @@ const createFloatingUI = () => {
     cleanupOldUI();
     
     const styles = `
-        <style>
-            .ai-floating-btn {
-                position: fixed; z-index: 1000000;
-                display: flex; align-items: center; justify-content: center;
-                color: white; cursor: move; 
-                border: 2px solid rgba(255,255,255,0.4);
-                box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
-                touch-action: none; transition: transform 0.2s;
-            }
-            #mic-btn {
-                width: 60px; height: 60px;
-                background: linear-gradient(135deg, #0d6efd, #0a58ca);
-                border-radius: 50%; bottom: 100px; left: 20px;
-            }
-            #speaker-btn {
-                width: 45px; height: 45px;
-                background: linear-gradient(135deg, #6c757d, #343a40);
-                border-radius: 50%; bottom: 170px; left: 27px;
-            }
-            .mic-active {
-                animation: ai-pulse 1.5s infinite;
-                background: linear-gradient(135deg, #dc3545, #bb2d3b) !important;
-            }
-            @keyframes ai-pulse {
-                0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
-                70% { box-shadow: 0 0 0 20px rgba(220,53,69,0); }
-                100% { box-shadow: 0 0 0 0 rgba(220,53,69,0); }
-            }
-            .cursor-pointer { cursor: pointer; }
-            .hover-bg-light:hover { background-color: #f8f9fa; }
-            .hover-shadow:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-            .hover-lift { transition: transform 0.2s; }
-            .hover-lift:hover { transform: translateY(-4px); }
-            #expert-panel-overlay { 
-                direction: rtl; 
-                text-align: right; 
-            }
-            
-                    /* ================== تحسينات النافذة المنبثقة للموبايل ================== */
-
-/* إصلاح النافذة المنبثقة */
-#expert-panel-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    height: 100dvh !important; /* Dynamic viewport height للموبايل */
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    z-index: 9999999 !important;
-}
-
-/* حاوية المحتوى */
-#expert-panel-overlay .container {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    min-height: 100vh !important;
-    min-height: 100dvh !important;
-    display: flex !important;
-    align-items: flex-start !important;
-}
-
-#expert-panel-content {
-    width: 100% !important;
-    max-width: 900px !important;
-    margin: 0 auto !important;
-    background: white !important;
-    position: relative !important;
-    box-shadow: 0 0 50px rgba(0,0,0,0.3) !important;
-}
-
-/* تحسينات الموبايل */
-@media (max-width: 768px) {
-    #expert-panel-overlay {
-        padding: 0 !important;
-        display: flex !important;
-        align-items: flex-start !important;
-    }
-    
-    #expert-panel-overlay .container {
-        padding: 8px !important;
-        display: block !important;
-    }
-    
-    #expert-panel-content { 
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        border-radius: 12px !important;
-        overflow: hidden !important;
-        max-height: none !important;
-    }
-    
-    /* تحسين المحتوى الداخلي */
-    #expert-panel-content .p-4 {
-        padding: 1rem !important;
-        max-height: none !important;
-        overflow-y: visible !important;
-    }
-    
-    #expert-panel-content .p-3 {
-        padding: 0.75rem !important;
-    }
-    
-    /* تحسين البطاقات */
-    .col-md-6 { 
-        width: 100% !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin-bottom: 0.75rem !important;
-    }
-    
-    .card {
-        margin-bottom: 0.5rem !important;
-    }
-    
-    .card-body { 
-        font-size: 0.85rem !important;
-        padding: 0.75rem !important;
-        line-height: 1.4 !important;
-    }
-    
-    /* تحسين التنبيهات */
-    .alert { 
-        font-size: 0.9rem !important;
-        padding: 0.75rem !important;
-        margin-bottom: 1rem !important;
-    }
-    
-    /* تحسين بطاقة الدليل */
-    .guide-card {
-        margin-bottom: 1rem !important;
-    }
-    
-    .guide-card .card-body {
-        padding: 1rem !important;
-    }
-    
-    .guide-icon {
-        width: 40px !important;
-        height: 40px !important;
-    }
-    
-    .guide-card h5 {
-        font-size: 0.9rem !important;
-        line-height: 1.3 !important;
-    }
-    
-    .guide-card .small {
-        font-size: 0.75rem !important;
-    }
-    
-    /* تحسين الأزرار */
-    .btn {
-        font-size: 0.85rem !important;
-        padding: 0.5rem 0.75rem !important;
-        white-space: nowrap !important;
-    }
-    
-    .d-flex.gap-2 {
-        gap: 0.5rem !important;
-    }
-    
-    /* تحسين العناوين */
-    h5 {
-        font-size: 1rem !important;
-        line-height: 1.3 !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    h6 {
-        font-size: 0.9rem !important;
-        line-height: 1.3 !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    /* تحسين الخيارات والاقتراحات */
-    .choice-item, .suggestion-card, .best-choice-card {
-        padding: 0.75rem !important;
-        font-size: 0.85rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    .alternatives-list .badge {
-        font-size: 0.7rem !important;
-        padding: 0.25rem 0.4rem !important;
-    }
-    
-    /* تحسين نصائح البحث */
-    .search-tips {
-        padding: 0.75rem !important;
-        font-size: 0.85rem !important;
-    }
-    
-    .search-tips ul {
-        padding-left: 1.25rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    
-    .search-tips li {
-        margin-bottom: 0.25rem !important;
-        line-height: 1.4 !important;
-    }
-    
-    /* تحسين أمثلة البحث */
-    .example-searches .badge {
-        font-size: 0.75rem !important;
-        padding: 0.35rem 0.6rem !important;
-        margin-bottom: 0.35rem !important;
-    }
-    
-    /* تحسين معلومات السياق */
-    .context-info {
-        padding: 0.5rem !important;
-        font-size: 0.8rem !important;
-        margin-bottom: 0.75rem !important;
-    }
-    
-    /* تحسين أيقونة الثقة */
-    .confidence-indicator .badge {
-        font-size: 0.7rem !important;
-        padding: 0.25rem 0.5rem !important;
-    }
-    
-    /* تحسين الأزرار العائمة */
-    #mic-btn { 
-        width: 55px !important; 
-        height: 55px !important; 
-        bottom: 20px !important; 
-        right: 20px !important;
-        left: auto !important;
-    }
-    
-    #speaker-btn { 
-        width: 45px !important; 
-        height: 45px !important; 
-        bottom: 85px !important; 
-        right: 25px !important;
-        left: auto !important;
-    }
-    
-    /* تحسين اللودر */
-    #ai-loader {
-        bottom: 20px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        padding: 10px 20px !important;
-        font-size: 0.85rem !important;
-        max-width: 90% !important;
-    }
-}
-
-/* شاشات صغيرة جداً (أقل من 400px) */
-@media (max-width: 400px) {
-    #expert-panel-content {
-        border-radius: 8px !important;
-    }
-    
-    #expert-panel-content .p-4 {
-        padding: 0.75rem !important;
-    }
-    
-    .card-body {
-        padding: 0.6rem !important;
-        font-size: 0.8rem !important;
-    }
-    
-    .alert {
-        padding: 0.6rem !important;
-        font-size: 0.85rem !important;
-    }
-    
-    h5 {
-        font-size: 0.95rem !important;
-    }
-    
-    h6 {
-        font-size: 0.85rem !important;
-    }
-    
-    .btn {
-        font-size: 0.8rem !important;
-        padding: 0.4rem 0.65rem !important;
-    }
-    
-    #mic-btn {
-        width: 50px !important;
-        height: 50px !important;
-        bottom: 15px !important;
-        right: 15px !important;
-    }
-    
-    #speaker-btn {
-        width: 40px !important;
-        height: 40px !important;
-        bottom: 75px !important;
-        right: 20px !important;
-    }
-    
-    .guide-card h5 {
-        font-size: 0.85rem !important;
-    }
-    
-    .guide-icon {
-        width: 35px !important;
-        height: 35px !important;
-    }
-}
-
-/* الوضع الأفقي للموبايل */
-@media (max-width: 768px) and (orientation: landscape) {
-    #expert-panel-overlay {
-        align-items: flex-start !important;
-    }
-    
-    #expert-panel-content {
-        max-height: none !important;
-    }
-    
-    .card-body {
-        max-height: 120px !important;
-        overflow-y: auto !important;
-    }
-}
-
-/* تحسينات إضافية للتفاعل */
-.cursor-pointer, .choice-item, .suggestion-card, .best-choice-card {
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
-    touch-action: manipulation !important;
-    transition: all 0.2s ease !important;
-}
-
-.choice-item:active, .suggestion-card:active, .best-choice-card:active {
-    transform: scale(0.98) !important;
-    opacity: 0.9 !important;
-}
-
-.btn {
-    touch-action: manipulation !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-}
-
-/* تحسين السكرول */
-#expert-panel-overlay, #expert-panel-content, .card-body {
-    -webkit-overflow-scrolling: touch !important;
-    scroll-behavior: smooth !important;
-}
-
-/* منع مشاكل الزووم */
-input, textarea, select, button {
-    font-size: 16px !important; /* منع الزووم التلقائي في iOS */
-}
-
-/* تحسين زر الإغلاق */
-.btn-close {
-    font-size: 1.2rem !important;
-    padding: 0.5rem !important;
-    opacity: 0.8 !important;
-}
-
-@media (max-width: 768px) {
-    .btn-close {
-        font-size: 1rem !important;
-        padding: 0.4rem !important;
-    }
-}
-               
-        </style>
     `;
     
     const html = `
